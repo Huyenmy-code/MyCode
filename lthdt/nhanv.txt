@@ -1,0 +1,84 @@
+#pragma once
+#include<iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
+class NhanVien 
+{		
+	public:
+		string hoten, luong,gtinh,  que, ns, ngayvao;
+		int manv,  NVdien, ngaynghi; 
+		
+		NhanVien(){}
+		virtual void nhap(int ma, int loainv)
+	    {
+	    	manv=ma;
+	    	NVdien=loainv;
+	    	cin.ignore();
+	        cout<<"\nNhap Ho Ten: ";
+			fflush(stdin); 
+			getline(cin,hoten);
+	        cout<<"Gioi tinh (Nam/Nu) :";	
+	        fflush(stdin);
+	        getline(cin,gtinh);
+//	        if((gtinh!="Nam")||(gtinh!="nam")||(gtinh!="Nu")||(gtinh!="nu"))
+//	        {
+//	        	cout<<"Moi nhap lai gioi tinh !";
+//	        	cout<<"\nGioi tinh (Nam/Nu) :";	
+//	        	fflush(stdin);
+//	        	getline(cin,gtinh);
+//			}
+	        if ((gtinh=="nu")||(gtinh=="Nu"))
+	        {
+	            cout<<"Nghi ngay nao trong tuan: ";cin>>ngaynghi;
+	        }
+	        cout<<"Que quan: ";
+			fflush(stdin);
+			getline(cin,que);
+	        cout<<"Ngay Sinh (d/m/y) : ";
+			fflush(stdin);
+			getline(cin,ns);
+	        cout<<"Ngay vao Cong Ty (d/m/y) : ";
+			fflush(stdin);
+			getline(cin,ngayvao);
+	        cout<<"Luong: ";
+	        fflush(stdin);
+	        getline(cin,luong);
+	    }
+      virtual  void save(){
+        	ofstream myfile;
+   			myfile.open ("D:\\Nhanvien.txt", std::ios_base::app);
+			myfile << manv << "," << hoten << "," << gtinh << "," << que << "," << ns << ","<< ngayvao << ","<< luong<<","<< NVdien<< "\n"; 
+    		myfile.close();
+        }
+        virtual  void nvnghi(){
+        	ofstream myfile;
+        	
+        		myfile.open ("D:\\NvNuNghi.txt", std::ios_base::app);
+        	if ((gtinh=="nu")||(gtinh=="Nu"))
+        	{
+				myfile << manv << "," << ngaynghi<< "\n"; 
+	    		
+			}
+   			myfile.close();
+        }
+        
+     virtual  void display(){
+			
+			string loainv;
+			if(NVdien == 1){
+				loainv = "Nhan Vien Van Phong";
+			}
+			else if(NVdien == 2){
+				loainv = "Cong Nhan San Xuat";
+			}
+			else if(NVdien == 3){
+				loainv = "Nhan Vien Chuyen Di";
+			}
+	
+        	cout<<"\n\nMaNV: "<< manv << "\n" <<"HoTen: " <<hoten << "\t\t\t" <<"QueQuan: "<< que<< "\n" << "GioiTinh: "<< gtinh << "\t\t\t"<<"NgayVao: "<< ngayvao  << "\n" <<"NgaySinh: "<< ns
+			<< "\t\t"<<"Luong: "<< luong <<"\n"<<"Nhan vien thuoc dien: "<<loainv; 
+			cout<<"\n____________________________________________________";
+        }
+         
+};

@@ -1,0 +1,238 @@
+#pragma once
+#include<iostream>
+#include <fstream>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include "NvVanPhong.cpp"
+#include "CongNhanSX.cpp"
+#include "NvChuyenDi.cpp"
+class QLNS:public NvVanPhong,CongNhanSX,NvChuyenDi
+{ 
+public: 
+    vector<NhanVien> DSnhanvien;
+    vector<NvVanPhong> DSnvvp;
+	vector<CongNhanSX> DScnsx;
+	vector<NvChuyenDi> DSnvcd;
+
+	vector<string> split (string s, char kitu) {
+	        vector<string> result;
+	        int i = 0;
+			for(int j = 0; j < s.length();j++){
+				if(s[j] == kitu){
+					result.push_back(s.substr(i, j - i));
+	
+					i = j + 1;
+				}
+			}
+			result.push_back(s.substr(i,  s.length() - i));
+
+	        return result;
+	}
+	void readNhanVien(){
+		ifstream file("D:\\NhanVien.txt");
+	    string str; 
+	    while (getline(file, str)) {
+	        vector<string> nvien = split (str, ',');
+	    	if(nvien.size() > 5){
+	    		NhanVien nv;
+	    		nv.manv = stoi(nvien[0]);
+	    		nv.hoten = nvien[1];
+				nv.gtinh = nvien[2];
+				nv.que = nvien[3];
+				nv.ns=nvien[4];
+				nv.ngayvao=nvien[5];
+				nv.luong =nvien[6];
+				nv.NVdien = stoi(nvien[7]);
+	    		DSnhanvien.push_back (nv);
+	    	}
+	    }
+	}
+	NhanVien getNhanVien(int manv){
+		NhanVien nvien;
+		for (NhanVien nv : DSnhanvien) {
+           if(nv.manv == manv){
+			   nvien = nv;
+			   break;
+           }
+        }
+		return nvien;
+	}
+	void readNVVP(){
+		ifstream file("D:\\NVVP.txt");
+	    string str; 
+	    while (getline(file, str)) {
+	        vector<string> nvien = split (str, ',');
+	    	if(nvien.size() > 5){
+	    		NvVanPhong nv;
+	    		nv.manv = stoi(nvien[0]);
+	    		nv.phong =stoi(nvien[1]);
+	    		nv.nvn = getNhanVien(nv.manv);
+	    		DSnvvp.push_back (nv);
+	    	}
+	    }
+	}
+	void readCNSX(){
+		ifstream file("D:\\CNSX.txt");
+	    string str; 
+	    while (getline(file, str)) {
+	        vector<string> nvien = split (str, ',');
+	    	if(nvien.size() > 5){
+	    		CongNhanSX nv;
+	    		nv.manv = stoi(nvien[0]);
+	    		nv.dmslsp=stoi(nvien[1]);
+				nv.nvn = getNhanVien(nv.manv);
+	    		DScnsx.push_back (nv);
+	    	}
+	    }
+	}
+	void readNVCD(){
+		ifstream file("D:\\NVCD.txt");
+	    string str; 
+	    while (getline(file, str)) {
+	        vector<string> nvien = split (str, ',');
+	    	if(nvien.size() > 5){
+	    		NvChuyenDi nv;
+	    		nv.manv = stoi(nvien[0]);
+				nv.ngaydi =nvien[1];
+				nv.nvn = getNhanVien(nv.manv);
+	    		DSnvcd.push_back (nv);
+	    	}
+	    }
+	}
+	
+	int getManv(){
+		int newmanv = 0;
+        for (NhanVien nv : DSnhanvien) {
+           if(newmanv < nv.manv){
+               newmanv = nv.manv;
+           }
+        }
+        return newmanv + 1;
+	}
+	void timkiem()
+	{
+		string tim = "";
+	    cout << "Nhap ma cua nhan vien can tim:";cin >> tim;
+		NhanVien nv;
+	    
+			int manv = stoi(tim);
+	        nv = getNhanVien(manv);
+	        //nv.readNhanVien();
+	        nv.display();
+	}
+	void nhapnv(){
+		
+		int manv = getManv();
+	    int loainv;
+	    cout << "\n----------------Nhom Nhan Vien-----------------\n";
+		cout << "1.Nhan vien van phong.\n";
+		cout << "2.Cong nhan san xuat.\n";
+		cout << "3.Nhan vien chuyen di\n";
+		cout << "4.Tro ve.\n";
+		cout << "Lua chon:";cin >> loainv;
+	    
+	    if(loainv == 1){
+	        NvVanPhong nvvp;
+	    	int kq=nvvp.nhap(manv, loainv);
+	    	if (kq==1)
+	    	{
+	    		DSnvvp.push_back (nvvp);
+	    		DSnhanvien.push_back(nvvp.nvn);
+			}
+	    
+	    }
+		else if (loainv == 2){
+	        CongNhanSX cnsx ;
+	    	int kq=cnsx.nhap(manv, loainv);
+	    	if (kq==1)
+	    	{
+	    		DScnsx.push_back (cnsx);
+	    		DSnhanvien.push_back(cnsx.nvn);
+			}
+	    }
+	    else if(loainv == 3){
+	        NvChuyenDi nvcd ;
+	    	int kq=nvcd.nhap(manv, loainv);
+	    	if (kq==1)
+	    	{
+	    		DSnvcd.push_back (nvcd);
+	    		DSnhanvien.push_back(nvcd.nvn);
+			}
+	    }
+	    
+	}
+};
+
+int main()
+{
+	QLNS ql;
+	ql.readNhanVien();
+	ql.readNVVP();
+	ql.readCNSX();
+	ql.readNVCD();
+//	em read o day tat ca cac loaij nhan vien vaf xoa o trong sww
+	int Luachon;
+	do {
+		cout << "\n----------------MENU-----------------\n";
+		cout << "1.Nhap nhan vien.\n";
+		cout << "2.Thong ke tat ca nhan vien.\n";
+		cout << "3.Thong ke nhan vien van phong.\n";
+		cout << "4.Thong ke cong nhan san xuat.\n";
+		cout << "5.Thong ke nhan vien chuyen di.\n";
+		cout << "6.Thong ke nhan vien nu nghi.\n";
+		cout << "7.Thoat.\n";
+		cout <<"************************************************\n";
+		cout << "Lua chon:";cin >> Luachon;
+		switch (Luachon)
+		{
+		case 1:
+			ql.nhapnv();
+			break;
+		case 2:
+			
+			 for (int i = 0; i < ql.DSnhanvien.size();i++){
+				NhanVien nv = ql.DSnhanvien[i];
+				nv.display();
+			}
+			
+			break;
+		case 3:
+			
+			for (int i = 0; i < ql.DSnvvp.size();i++){
+				NvVanPhong nv = ql.DSnvvp[i];
+				nv.display();
+			}
+			
+			break;
+		case 4:
+			
+			for (int i = 0; i < ql.DScnsx.size();i++){
+				CongNhanSX nv = ql.DScnsx[i];
+				nv.display();
+			}
+			
+			break;
+		case 5:
+			
+			for (int i = 0; i < ql.DSnvcd.size();i++){
+				NvChuyenDi nv = ql.DSnvcd[i];
+				nv.display();
+			}
+		
+			break;
+		case 6:
+			for (int i = 0; i < ql.DSnvvp.size();i++){
+				NvVanPhong nv = ql.DSnvvp[i];
+				nv.display();
+			}
+			break;
+		case 7:		
+			break;
+		default:
+			
+			break;
+		}
+	} while (Luachon != 7);
+
+}

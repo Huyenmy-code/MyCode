@@ -1,0 +1,57 @@
+#include<iostream>
+#include <fstream>
+#include <vector>
+#include "NhanVien.cpp"
+class NvChuyenDi :public NhanVien
+{
+ 
+  public:
+  	int manv;
+    	string ngaydi;
+   		NhanVien nvn;
+        NvChuyenDi(){}
+        
+        int nhap(int ma, int NVdien){
+        	manv = ma;
+        	nvn.nhap(ma,NVdien);	
+			cin.ignore();	
+			cout<<"Ngay chuyen di : "; 
+			fflush(stdin);
+			getline(cin,ngaydi);
+			int luuNV;
+			cout << "----------------Luu thong tin nhan vien-----------------\n";
+			cout << "1.Luu.\n";
+			cout << "2.Luu va hien ra man hinh.\n";
+			cout << "3.Hien thi ra man hinh vs khong luu.\n";
+			cout << "Nhap Lua chon:";   cin >> luuNV;
+			if(luuNV == 1){
+				save();
+				return 1;
+			}
+			if(luuNV == 2){
+				display();
+				save();
+				return 1;
+			}
+			return 0;
+				
+        }
+        void save(){
+        	ofstream myfile;
+   			myfile.open ("D:\\NVCD.txt", std::ios_base::app);
+			myfile << manv << "," << ngaydi << "\n";
+    		myfile.close();
+    		nvn.save();
+        }
+        void display(){
+        	ofstream myfile;
+   			myfile.open ("D:\\NVCD.txt", std::ios_base::app);
+			myfile << manv << "," << ngaydi << "\n";
+    		myfile.close();
+    		nvn.save();
+			cout << "NHAN VIEN CHUYEN DI: "; nvn.display();
+			cout<<"\n"<<" HoTen: " << hoten <<"\n"<<"Ngay chuyen di: "<< ngaydi <<"\n";
+        }
+        
+};
+
